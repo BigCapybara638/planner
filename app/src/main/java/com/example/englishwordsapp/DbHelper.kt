@@ -29,11 +29,31 @@ class DbHelper(val context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.close()
     }
 
-    fun getGoal() : String {
-        val db = this.readableDatabase
+    // Метод для получения всех элементов
+    fun getAllItems(): List<Item> {
+        val items = mutableListOf<Item>()
+        val db = readableDatabase
+        val cursor = db.query(
+            "plans",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
 
-        val result = db.rawQuery("SELECT * FROM plans", null)
-        return result.toString()
+        with(cursor) {
+            while (moveToNext()) {
+                val id = getInt(getColumnIndexOrThrow("id"))
+                val title = getString(getColumnIndexOrThrow("title"))
+                val date = getString(getColumnIndexOrThrow("date"))
+                val publish = getString(getColumnIndexOrThrow("published"))
+                items.add(Item(id, title, date, publish))
+            }
+            close()
+        }
+        db.close()
+        return items
     }
-
 }

@@ -29,7 +29,7 @@ class AddActivity : AppCompatActivity() {
 
         addGoal.setOnClickListener {
             val title = addTitle.text.toString().trim()
-            val date = addTitle.text.toString().trim()
+            val date = addDate.text.toString().trim()
             val publish = "no"
 
             if(title == "" || date == "")

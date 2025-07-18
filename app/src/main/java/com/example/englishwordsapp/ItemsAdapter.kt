@@ -25,16 +25,9 @@ class ItemsAdapter(var items: List<Item>, var context: Context) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.goalTitle.text =
-        holder.goalDate.text =
-
-        val imageId = context.resources.getIdentifier(
-            items[position].image,
-            "drawable",
-            context.packageName
-        )
-
-        holder.image.setImageResource(imageId)
+        val currentGoal = items[position]
+        holder.goalTitle.text = currentGoal.title
+        holder.goalDate.text =currentGoal.date
     }
 
 }
