@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">EnglishWordsApp</string>
+    <string name="tasks">Сегодня</string>
+    <string name="calendar">Все задачи</string>
+    <string name="settings">Настройки</string>
 </resources>
