@@ -11,11 +11,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 class AddActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_add)
+
+        fun isValidDate(dateStr: String): Boolean {
+            val format = SimpleDateFormat("dd.MM.yyyy").apply {
+                isLenient = false  // Запрещает автоматическую коррекцию дат (например, 32.01 → 01.02)
+            }
+            return try {
+                format.parse(dateStr)
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
 
         val addTitle: EditText = findViewById(R.id.addTitle)
         val addDate: EditText = findViewById(R.id.addDate)
@@ -35,16 +51,23 @@ class AddActivity : AppCompatActivity() {
             if(title == "" || date == "")
                 Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_LONG).show()
             else {
-                val goal = Plans(title, date, publish)
+                if (!isValidDate(date)) {
+                    Toast.makeText(this, "Введите дату в формате: DD.MM.YYYY", Toast.LENGTH_LONG).show()
+                }
+                else {
+                    val goal = Plans(title, date, publish)
 
-                val db = DbHelper(this, null)
-                db.addGoal(goal)
-                Toast.makeText(this, "Цель добавлена", Toast.LENGTH_LONG).show()
+                    val db = DbHelper(this, null)
+                    db.addGoal(goal)
+                    Toast.makeText(this, "Цель добавлена", Toast.LENGTH_LONG).show()
 
-                addTitle.text.clear()
-                addDate.text.clear()
+                    addTitle.text.clear()
+                }
+
             }
         }
+
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

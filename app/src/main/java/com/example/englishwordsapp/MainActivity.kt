@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         dbHelper = DbHelper(this, null)
 
-        val items = dbHelper.getAllItems()
+        val items = dbHelper.getTodayItems()
 
         adapter = ItemsAdapter(items, this)
         recyclerView.adapter = adapter

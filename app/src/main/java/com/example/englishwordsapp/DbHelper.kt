@@ -4,6 +4,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DbHelper(val context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, "app", factory, 1)
@@ -55,5 +58,31 @@ class DbHelper(val context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
         db.close()
         return items
+    }
+
+    fun getTodayItems(): List<Item> {
+        val today = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
+        val todayItems = mutableListOf<Item>()
+
+        val db = readableDatabase
+
+        // Лучший вариант: если дата хранится в формате dd.MM.yyyy
+        val cursor = db.rawQuery(
+            """SELECT * FROM plans 
+           WHERE date = ?""",
+            arrayOf(today)
+        )
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val id = it.getInt(it.getColumnIndexOrThrow("id"))
+                val title = it.getString(it.getColumnIndexOrThrow("title"))
+                val date = it.getString(it.getColumnIndexOrThrow("date"))
+                val publish = it.getString(it.getColumnIndexOrThrow("published"))
+                todayItems.add(Item(id, title, date, publish))
+            }
+        }
+
+        return todayItems
     }
 }
