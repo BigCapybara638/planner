@@ -1,7 +1,6 @@
 package com.example.englishwordsapp
 
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+class AllItemsActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ItemsAdapter
@@ -21,14 +20,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_all_items)
 
-        recyclerView = findViewById(R.id.itemList)
+        recyclerView = findViewById(R.id.itemListAll)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         dbHelper = DbHelper(this, null)
 
-        val items = dbHelper.getTodayItems()
+        val items = dbHelper.getAllItems()
 
         adapter = ItemsAdapter(items, this)
         recyclerView.adapter = adapter
@@ -44,12 +43,12 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_tasks -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.nav_calendar -> {
                     // Показать экран календаря
-                    val intent = Intent(this, AllItemsActivity::class.java)
-                    startActivity(intent)
                     true
                 }
                 R.id.nav_settings -> {
@@ -61,12 +60,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-        // Установить начальный фрагмент
-        if (savedInstanceState == null) {
-            bottomNavigationView.selectedItemId = R.id.nav_tasks
-        }
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
